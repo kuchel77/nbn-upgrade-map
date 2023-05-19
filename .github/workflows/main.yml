@@ -1,0 +1,13 @@
+name: Address Testing
+on: workflow_call
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services: 
+      db: 
+        image: minus34/gnafloader:latest
+        ports: 
+          - 5433:5432
+    steps:
+      - run: echo "Container running"
