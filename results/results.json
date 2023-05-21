@@ -23,6 +23,12 @@
             "name": "Belmont north",
             "file": "belmont-north",
             "date": "21-05-2023"
+        },
+        {
+            "internal": "HOLSWORTHY",
+            "name": "Holsworthy",
+            "file": "holsworthy",
+            "date": "21-05-2023"
         }
     ]
 }
