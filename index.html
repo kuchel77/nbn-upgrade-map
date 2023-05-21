@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>A Leaflet map!</title>
+    <title>NBN Fibre Upgrade Availability Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
@@ -28,6 +28,13 @@
             minZoom: 0
         }).addTo(map);
 
+        // get url parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var default_suburb = "bli-bli";
+        if (urlParams.has("suburb")) {
+            default_suburb = urlParams.get("suburb");
+        }
+
         // add dropdown
         fetch("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/results.json").then(res => res.json()).then(data => {
             var dropdown = L.control({ position: 'topright' });
@@ -36,7 +43,7 @@
                 var dropdownHTML = '<select id="suburb" onchange="loadSuburb(this.value)">';
                 for (var suburb in data["suburbs"]) {
                     suburb = data["suburbs"][suburb];
-                    dropdownHTML += '<option value="https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/' + suburb.file + '.geojson" ' + (suburb.name == "Bli Bli" ? "selected" : "") + '>' + suburb.name + '</option>';
+                    dropdownHTML += '<option value="https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/' + suburb.file + '.geojson" ' + (suburb.file == default_suburb ? "selected" : "") + '>' + suburb.name + '</option>';
                 }
                 dropdownHTML += '</select>';
                 div.innerHTML = dropdownHTML;
@@ -88,10 +95,12 @@
                 }).addTo(map);
                 // fit to bounds
                 map.fitBounds(L.geoJson(data).getBounds());
+                // update url
+                window.history.pushState("", "", "?suburb=" + url.split("/").pop().split(".")[0]);
             });
         }
 
-        loadSuburb("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/bli-bli.geojson")
+        loadSuburb("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/"+default_suburb+".geojson")
     </script>
 </body>
 </html>
