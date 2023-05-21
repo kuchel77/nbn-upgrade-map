@@ -59,6 +59,12 @@
             "name": "Coolum beach",
             "file": "coolum-beach",
             "date": "21-05-2023"
+        },
+        {
+            "internal": "GOULBURN",
+            "name": "Goulburn",
+            "file": "goulburn",
+            "date": "21-05-2023"
         }
     ]
 }
