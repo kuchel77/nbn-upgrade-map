@@ -18,7 +18,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 def get_addresses():
-    cur.execute("SELECT * FROM gnaf_202302.address_principals WHERE locality_name = 'BLI BLI' LIMIT 5000")
+    cur.execute("SELECT * FROM gnaf_202302.address_principals WHERE locality_name = 'NEW LAMBTON' LIMIT 10000")
 
     rows = cur.fetchall()
 
@@ -82,5 +82,5 @@ if __name__ == "__main__":
                 }
             }
             formatted_addresses["features"].append(formatted_address)
-    with open('results.geojson', 'w') as outfile:
+    with open('results/newlambton.geojson', 'w') as outfile:
         json.dump(formatted_addresses, outfile)
