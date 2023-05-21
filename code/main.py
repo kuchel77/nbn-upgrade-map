@@ -78,7 +78,7 @@ if __name__ == "__main__":
     if not flag:
         suburb_record["suburbs"].append({
             "internal": target_suburb,
-            "display": target_suburb_display,
+            "name": target_suburb_display,
             "file": target_suburb_file,
             "date": datetime.datetime.now().strftime("%d-%m-%Y")
         })
