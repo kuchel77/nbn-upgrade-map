@@ -53,6 +53,12 @@
             "name": "Wetherill park",
             "file": "wetherill-park",
             "date": "21-05-2023"
+        },
+        {
+            "internal": "COOLUM BEACH",
+            "name": "Coolum beach",
+            "file": "coolum-beach",
+            "date": "21-05-2023"
         }
     ]
 }
