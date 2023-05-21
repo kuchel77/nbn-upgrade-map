@@ -47,6 +47,12 @@
             "name": "Helensburgh",
             "file": "helensburgh",
             "date": "21-05-2023"
+        },
+        {
+            "internal": "WETHERILL PARK",
+            "name": "Wetherill park",
+            "file": "wetherill-park",
+            "date": "21-05-2023"
         }
     ]
 }
