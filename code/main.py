@@ -19,7 +19,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 def get_addresses(target_suburb):
-    cur.execute(f"SELECT * FROM gnaf_202302.address_principals WHERE locality_name = '{target_suburb}' LIMIT 10")
+    cur.execute(f"SELECT * FROM gnaf_202302.address_principals WHERE locality_name = '{target_suburb}' LIMIT 10000")
 
     rows = cur.fetchall()
 
