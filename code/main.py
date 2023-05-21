@@ -1,3 +1,4 @@
+import datetime
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import urllib.parse
@@ -17,8 +18,8 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-def get_addresses():
-    cur.execute("SELECT * FROM gnaf_202302.address_principals WHERE locality_name = 'NEW LAMBTON' LIMIT 10000")
+def get_addresses(target_suburb):
+    cur.execute(f"SELECT * FROM gnaf_202302.address_principals WHERE locality_name = '{target_suburb}' LIMIT 10")
 
     rows = cur.fetchall()
 
@@ -52,7 +53,7 @@ def get_data(address):
     address["upgrade"] = status['addressDetail']['altReasonCode']
 
     return
- 
+
 def runner(addresses):
     threads= []
     with ThreadPoolExecutor(max_workers=20) as executor:
@@ -60,7 +61,32 @@ def runner(addresses):
             threads.append(executor.submit(get_data, address))
        
 if __name__ == "__main__":
-    addresses = get_addresses()
+    target_suburb = "CHARLESTOWN"
+    target_suburb_display = target_suburb.capitalize()
+    target_suburb_file = target_suburb.lower().replace(" ", "-")
+
+    suburb_record = open("results/results.json", "r")
+    suburb_record = json.load(suburb_record)
+
+    # check if suburb has been processed before
+    flag = False
+    for suburb in suburb_record["suburbs"]:
+        if suburb["internal"] == target_suburb:
+            suburb["date"] = datetime.datetime.now().strftime("%d-%m-%Y")
+            flag = True
+            break
+    if not flag:
+        suburb_record["suburbs"].append({
+            "internal": target_suburb,
+            "display": target_suburb_display,
+            "file": target_suburb_file,
+            "date": datetime.datetime.now().strftime("%d-%m-%Y")
+        })
+    with open("results/results.json", "w") as outfile:
+        json.dump(suburb_record, outfile, indent=4)
+
+    addresses = get_addresses(target_suburb)
+    addresses = sorted(addresses, key=lambda k: k['name'])
     runner(addresses)
     formatted_addresses = {
         "type": "FeatureCollection",
@@ -82,5 +108,5 @@ if __name__ == "__main__":
                 }
             }
             formatted_addresses["features"].append(formatted_address)
-    with open('results/newlambton.geojson', 'w') as outfile:
+    with open(f"results/{target_suburb_file}.geojson", "w") as outfile:
         json.dump(formatted_addresses, outfile)

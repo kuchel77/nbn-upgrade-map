@@ -1,0 +1,22 @@
+{
+    "suburbs": [
+        {
+            "internal": "BLI BLI",
+            "name": "Bli Bli",
+            "file": "bli-bli",
+            "date": "21-05-2023"
+        },
+        {
+            "internal": "NEW LAMBTON",
+            "name": "New Lambton",
+            "file": "new-lambton",
+            "date": "21-05-2023"
+        },
+        {
+            "internal": "CHARLESTOWN",
+            "display": "Charlestown",
+            "file": "charlestown",
+            "date": "21-05-2023"
+        }
+    ]
+}
