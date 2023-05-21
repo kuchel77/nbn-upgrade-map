@@ -41,7 +41,7 @@ jobs:
 
       - name: Run program
         run: |
-          python code/main.py ${{ github.event.inputs.suburb }} ${{ github.event.inputs.state }}
+          python code/main.py "${{ github.event.inputs.suburb }}" "${{ github.event.inputs.state }}"
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
