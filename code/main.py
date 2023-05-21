@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import urllib.parse
 import psycopg2
 import json
+import sys
 
 lookupUrl = "https://places.nbnco.net.au/places/v1/autocomplete?query="
 detailUrl = "https://places.nbnco.net.au/places/v2/details/"
@@ -18,8 +19,8 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-def get_addresses(target_suburb):
-    cur.execute(f"SELECT * FROM gnaf_202302.address_principals WHERE locality_name = '{target_suburb}' LIMIT 10000")
+def get_addresses(target_location):
+    cur.execute(f"SELECT * FROM gnaf_202302.address_principals WHERE locality_name = '{target_location[0]}' AND state = '{target_location[1]}' LIMIT 10000")
 
     rows = cur.fetchall()
 
@@ -61,7 +62,9 @@ def runner(addresses):
             threads.append(executor.submit(get_data, address))
        
 if __name__ == "__main__":
-    target_suburb = "CHARLESTOWN"
+    target_suburb = sys.argv[1]
+    target_state = sys.argv[2]
+    target_location = [target_suburb, target_state]
     target_suburb_display = target_suburb.capitalize()
     target_suburb_file = target_suburb.lower().replace(" ", "-")
 
@@ -85,7 +88,7 @@ if __name__ == "__main__":
     with open("results/results.json", "w") as outfile:
         json.dump(suburb_record, outfile, indent=4)
 
-    addresses = get_addresses(target_suburb)
+    addresses = get_addresses(target_location)
     addresses = sorted(addresses, key=lambda k: k['name'])
     runner(addresses)
     formatted_addresses = {
