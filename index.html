@@ -22,13 +22,13 @@
         });
 
         // load a tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 18,
-                minZoom: 0
-            }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+            minZoom: 0
+        }).addTo(map);
 
+        // add dropdown
         fetch("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/results.json").then(res => res.json()).then(data => {
             var dropdown = L.control({ position: 'topright' });
             dropdown.onAdd = function (map) {
@@ -36,7 +36,7 @@
                 var dropdownHTML = '<select id="suburb" onchange="loadSuburb(this.value)">';
                 for (var suburb in data["suburbs"]) {
                     suburb = data["suburbs"][suburb];
-                    dropdownHTML += '<option value="https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/' + suburb.file + '.geojson">' + suburb.name + '</option>';
+                    dropdownHTML += '<option value="https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/' + suburb.file + '.geojson" ' + (suburb.name == "Bli Bli" ? "selected" : "") + '>' + suburb.name + '</option>';
                 }
                 dropdownHTML += '</select>';
                 div.innerHTML = dropdownHTML;
@@ -44,6 +44,21 @@
             }
             dropdown.addTo(map);
         });
+
+        // add legend
+        var legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            // include a opacity background over legend
+            div.style.backgroundColor = "#ffffff";
+            div.style.opacity = "0.8";
+            div.style.padding = "5px";
+            div.style.borderRadius = "5px";
+            var legendHTML = '<svg height="10" width="10"><circle cx="5" cy="5" r="5" fill="#00aa00" stroke="#000000" stroke-width="1" opacity="1" fill-opacity="0.8" /></svg> Existing FTTP<br><svg height="10" width="10"><circle cx="5" cy="5" r="5" fill="#00ff00" stroke="#000000" stroke-width="1" opacity="1" fill-opacity="0.8" /></svg> FTTP Upgrade<br><svg height="10" width="10"><circle cx="5" cy="5" r="5" fill="#ff0000" stroke="#000000" stroke-width="1" opacity="1" fill-opacity="0.8" /></svg> No upgrade available';
+            div.innerHTML = legendHTML;
+            return div;
+        }
+        legend.addTo(map);
 
         // load GeoJSON from an external file
         function loadSuburb(url) {
@@ -59,7 +74,7 @@
                     pointToLayer: function (feature, latlng) {
                         return L.circleMarker(latlng, {
                             radius: 5,
-                            fillColor: (feature.properties.upgrade == "FTTP_SA" || feature.properties.tech == "FTTP") ? "#00ff00" : "#ff0000",
+                            fillColor: feature.properties.upgrade == "FTTP_SA" ? "#00ff00" : feature.properties.tech == "FTTP" ? "#00aa00" : "#ff0000",
                             color: "#000000",
                             weight: 1,
                             opacity: 1,
@@ -68,7 +83,7 @@
                     },
                     onEachFeature: function (feature, layer) {
                         // popup with place name and upgrade type
-                        layer.bindPopup("<b>" + feature.properties.name + "</b><br>" + feature.properties.tech + " (" + feature.properties.upgrade + ")");
+                        layer.bindPopup("<b>" + feature.properties.name + "</b><br>Current tech: " + feature.properties.tech + "<br>Upgrade available: " + (feature.properties.upgrade == "FTTP_SA" ? "Yes" : feature.properties.tech == "FTTP" ? "N/A" : "No"));
                     }
                 }).addTo(map);
                 // fit to bounds
@@ -76,7 +91,7 @@
             });
         }
 
-        loadSuburb("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/new-lambton.geojson")
+        loadSuburb("https://raw.githubusercontent.com/LukePrior/nbn-upgrade-map/main/results/bli-bli.geojson")
     </script>
 </body>
 </html>
