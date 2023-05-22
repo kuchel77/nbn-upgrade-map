@@ -83,6 +83,12 @@
             "name": "Warrnambool",
             "file": "warrnambool",
             "date": "22-05-2023"
+        },
+        {
+            "internal": "HORSHAM",
+            "name": "Horsham",
+            "file": "horsham",
+            "date": "22-05-2023"
         }
     ]
 }
